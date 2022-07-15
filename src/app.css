@@ -3,6 +3,7 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  transition: 1s;
 }
 .form {
   display: flex;
@@ -16,13 +17,23 @@ button, input {
   border-radius: 7px;
 }
 button {
+  cursor: pointer;
+}
+.reset-button {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  border: none;
+
+}
+.predict-button {
   background-color: #84a4a5;
   font-size: 3rem;
   transition: .2s;
-  cursor: pointer;
   padding: .5rem 1.5rem;
+  border-color: black;
 }
-button:hover {
+.predict-button:hover {
   border-color: #15616D;
   color: #15616D;
   background-color: #dbe3d9;
@@ -54,16 +65,20 @@ input[type=number]::-webkit-outer-spin-button {
   height: 600px;
   margin: 0 auto;
   position: relative;
-  top: 50px;
+  top: 5px;
 }
 .thermometer__confidence-measurement {
   width: 80%;
+  height: 0px;
   position: absolute;
   bottom: 0;
-  left: 4px;
+  left: 50%;
+  transform: translate(-50%, 0px);
+  transition: 1s;
 }
 .thermometer__bulb {
   width: 130px;
   height: 130px;
   border-radius: 50%;
+  transition: 1s;
 }

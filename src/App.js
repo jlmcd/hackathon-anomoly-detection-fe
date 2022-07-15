@@ -5,7 +5,7 @@ import generateDummyData from './dummyDataGenerator';
 const COLORS = {
   WHITE: '#E6EBE0',
   PURPLE: '#301A4B',
-  RED: '#F39A9D',
+  RED: '#F34213',
   GREEN: '#3F6C51',
   BLUE: '#15616D',
 };
@@ -17,16 +17,24 @@ const App = () => {
     confidence: null,
   });
 
-  const onValueChange = (evt) => {
-    evt.preventDefault();
-    const newValue = Number(evt.target.value);
-    if (Number.isNaN(newValue) || typeof newValue === 'string') return;
-    if (typeof newValue === 'number') setInputValue(Math.abs(newValue));
+  const onReset = () => {
+    setResults({
+      prediction: null,
+      confidence: null,
+    });
+    setInputValue(0);
   };
 
   const onSubmit = () => {
     const res = generateDummyData();
     setResults(res);
+  };
+
+  const onValueChange = (evt) => {
+    evt.preventDefault();
+    const newValue = Number(evt.target.value);
+    if (Number.isNaN(newValue) || typeof newValue === 'string') return;
+    if (typeof newValue === 'number') setInputValue(Math.abs(newValue));
   };
 
   const calculateConfidenceStyle = () => {
@@ -37,10 +45,10 @@ const App = () => {
     };
   };
 
-  const calculateResultColor = (isBackground) => {
+  const calculateResultColor = (includeTransparancy) => {
     if (!results.prediction) return null;
     let backgroundColor = COLORS[results.prediction];
-    if (isBackground) backgroundColor += '33'
+    if (includeTransparancy) backgroundColor += '08';
     return { backgroundColor };
   };
 
@@ -49,7 +57,13 @@ const App = () => {
       <div className="form">
         <h1>Is it normal?</h1>
         <input onChange={onValueChange} type="number" value={inputValue} />
-        <button onClick={onSubmit}>Predict</button>
+        <button
+          className="predict-button"
+          onClick={onSubmit}
+          style={calculateResultColor(true)}
+        >
+          Predict
+        </button>
       </div>
       <div className="thermometer-container">
         <div className="thermometer__stem">
@@ -60,6 +74,9 @@ const App = () => {
         </div>
         <div className="thermometer__bulb" style={calculateResultColor()} />
       </div>
+      <button onClick={onReset} className="reset-button">
+        Reset
+      </button>
     </div>
   );
 };
