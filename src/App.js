@@ -25,8 +25,21 @@ const App = () => {
     setInputValue(0);
   };
 
-  const onSubmit = () => {
-    const res = generateDummyData();
+  const onSubmit = async () => {
+    const res = await fetch('http://localhost:1337/prediction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {something: 'value'}
+    });
+    // const res = await fetch('http://localhost:1337/prediction', {
+    //   method: 'POST',
+    //   // headers: {
+    //   //   'Content-Type': 'application/json',
+    //   // },
+    //   // body: JSON.stringify({sample: [2, 10, 89]}),
+    // });
     setResults(res);
   };
 
@@ -49,15 +62,18 @@ const App = () => {
     if (!results.prediction) return null;
     let backgroundColor = COLORS[results.prediction];
     if (includeTransparancy) backgroundColor += '08';
-    const color = includeTextColor && results.prediction === 'GREEN' ? 'white' : ''
+    const color =
+      includeTextColor && results.prediction === 'GREEN' ? 'white' : '';
     return { backgroundColor, color };
   };
 
   const determineHeaderConfidence = () => {
     if (!results.prediction || !results.confidence) return 'Is it normal?';
     let header = 'We are fairly confident that this volume is';
-    if (results.confidence > .80) header = 'We are very confident that this volume is';
-    if (results.confidence < .20) header = 'There is a slight chance that this volume is';
+    if (results.confidence > 0.8)
+      header = 'We are very confident that this volume is';
+    if (results.confidence < 0.2)
+      header = 'There is a slight chance that this volume is';
     return header;
   };
 
@@ -65,13 +81,18 @@ const App = () => {
     if (!results.prediction || !results.confidence) return null;
     if (results.prediction === 'RED') return ' abnormal.';
     if (results.prediction === 'GREEN') return ' normal.';
-  }
+  };
 
   return (
     <div className="anomoly-detection-fe" style={calculateResultColor(true)}>
       <div className="content">
         <div className="form">
-          <h1>{determineHeaderConfidence()} <span style={calculateResultColor(false, true)}>{determineHeaderPrediction()}</span></h1>
+          <h1>
+            {determineHeaderConfidence()}{' '}
+            <span style={calculateResultColor(false, true)}>
+              {determineHeaderPrediction()}
+            </span>
+          </h1>
           <input onChange={onValueChange} type="number" value={inputValue} />
           <button
             className="predict-button"
@@ -88,7 +109,11 @@ const App = () => {
               className="thermometer__confidence-measurement"
               style={calculateConfidenceStyle()}
             >
-              { results.confidence && <div className="thermometer__confidence-label">{Math.round(results?.confidence * 100)}%</div> }
+              {results.confidence && (
+                <div className="thermometer__confidence-label">
+                  {Math.round(results?.confidence * 100)}%
+                </div>
+              )}
             </div>
           </div>
           <div className="thermometer__bulb" style={calculateResultColor()} />
