@@ -37,13 +37,15 @@ const App = () => {
     };
   };
 
-  const calculateResultColor = () => {
+  const calculateResultColor = (isBackground) => {
     if (!results.prediction) return null;
-
-  }
+    let backgroundColor = COLORS[results.prediction];
+    if (isBackground) backgroundColor += '33'
+    return { backgroundColor };
+  };
 
   return (
-    <div className="anomoly-detection-fe">
+    <div className="anomoly-detection-fe" style={calculateResultColor(true)}>
       <div className="form">
         <h1>Is it normal?</h1>
         <input onChange={onValueChange} type="number" value={inputValue} />
@@ -56,7 +58,7 @@ const App = () => {
             style={calculateConfidenceStyle()}
           />
         </div>
-        <div className="thermometer__bulb" style={ calculateResultColor() } />
+        <div className="thermometer__bulb" style={calculateResultColor()} />
       </div>
     </div>
   );
