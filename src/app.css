@@ -46,13 +46,21 @@ input[type=number]::-webkit-outer-spin-button {
   border: 2px solid black;
   background-color: #f7f9f5;
 }
+.thermometer__stem, .thermometer__confidence-measurement {
+  border-radius: 20px 20px 0 0;
+}
 .thermometer__stem {
   width: 40px;
   height: 600px;
   margin: 0 auto;
   position: relative;
   top: 50px;
-  border-radius: 20px 20px 0 0;
+}
+.thermometer__confidence-measurement {
+  width: 80%;
+  position: absolute;
+  bottom: 0;
+  left: 4px;
 }
 .thermometer__bulb {
   width: 130px;
