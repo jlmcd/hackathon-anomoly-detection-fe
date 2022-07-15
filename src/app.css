@@ -1,8 +1,84 @@
 .anomoly-detection-fe {
+  height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: center;
+  transition: 1s;
+}
+.form {
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
+h1 {
+  text-align: center;
+}
+button, input {
+  border-radius: 7px;
+}
+button {
+  cursor: pointer;
+}
+.reset-button {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  border: none;
+
+}
+.predict-button {
+  background-color: #84a4a5;
+  font-size: 3rem;
+  transition: .2s;
+  padding: .5rem 1.5rem;
+  border-color: black;
+}
+.predict-button:hover {
+  border-color: #15616D;
+  color: #15616D;
+  background-color: #dbe3d9;
+}
 input {
-  
+  background-color: #f7f9f5;
+  font-size: 6rem;
+  width: 300px;
+  text-align: center;
+  margin: 1rem;
+  border: 2px solid #999;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+
+/* Thermometer */
+.thermometer__stem, .thermometer__bulb {
+  border: 2px solid black;
+  background-color: #f7f9f5;
+}
+.thermometer__stem, .thermometer__confidence-measurement {
+  border-radius: 20px 20px 0 0;
+}
+.thermometer__stem {
+  width: 40px;
+  height: 600px;
+  margin: 0 auto;
+  position: relative;
+  top: 5px;
+}
+.thermometer__confidence-measurement {
+  width: 80%;
+  height: 0px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0px);
+  transition: 1s;
+}
+.thermometer__bulb {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  transition: 1s;
 }
