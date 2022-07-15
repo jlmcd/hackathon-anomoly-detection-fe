@@ -1,6 +1,8 @@
 import './app.css';
 
-function App() {
+
+
+const App = () => {
   return (
     <div className="anomoly-detection-fe">
       <input type="number" />
