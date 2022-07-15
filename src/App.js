@@ -52,10 +52,20 @@ const App = () => {
     return { backgroundColor };
   };
 
+  const determineHeaderText = () => {
+    if (!results.prediction || !results.confidence) return 'Is it normal?';
+    let header = 'We are fairly confident that the status is';
+    if (results.confidence > .80) header = 'We are very confident that the status is';
+    if (results.confidence < .20) header = 'There is a slight chance that the status is';
+    if (results.prediction === 'RED') header += ' abnormal.';
+    if (results.prediction === 'GREEN') header += ' normal.';
+    return header;
+  };
+
   return (
     <div className="anomoly-detection-fe" style={calculateResultColor(true)}>
       <div className="form">
-        <h1>Is it normal?</h1>
+        <h1>{determineHeaderText()}</h1>
         <input onChange={onValueChange} type="number" value={inputValue} />
         <button
           className="predict-button"
