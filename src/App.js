@@ -76,11 +76,14 @@ const App = () => {
         </button>
       </div>
       <div className="thermometer-container">
+        <h2>Confidence Meter</h2>
         <div className="thermometer__stem">
           <div
             className="thermometer__confidence-measurement"
             style={calculateConfidenceStyle()}
-          />
+          >
+            <div className="thermometer__confidence-label">{Math.round(results?.confidence * 100)}%</div>
+          </div>
         </div>
         <div className="thermometer__bulb" style={calculateResultColor()} />
       </div>
