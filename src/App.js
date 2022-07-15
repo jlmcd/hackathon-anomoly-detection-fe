@@ -45,51 +45,58 @@ const App = () => {
     };
   };
 
-  const calculateResultColor = (includeTransparancy) => {
+  const calculateResultColor = (includeTransparancy, includeTextColor) => {
     if (!results.prediction) return null;
     let backgroundColor = COLORS[results.prediction];
     if (includeTransparancy) backgroundColor += '08';
-    return { backgroundColor };
+    const color = includeTextColor && results.prediction === 'GREEN' ? 'white' : ''
+    return { backgroundColor, color };
   };
 
-  const determineHeaderText = () => {
+  const determineHeaderConfidence = () => {
     if (!results.prediction || !results.confidence) return 'Is it normal?';
-    let header = 'We are fairly confident that the status is';
-    if (results.confidence > .80) header = 'We are very confident that the status is';
-    if (results.confidence < .20) header = 'There is a slight chance that the status is';
-    if (results.prediction === 'RED') header += ' abnormal.';
-    if (results.prediction === 'GREEN') header += ' normal.';
+    let header = 'We are fairly confident that this volume is';
+    if (results.confidence > .80) header = 'We are very confident that this volume is';
+    if (results.confidence < .20) header = 'There is a slight chance that this volume is';
     return header;
   };
 
+  const determineHeaderPrediction = () => {
+    if (!results.prediction || !results.confidence) return null;
+    if (results.prediction === 'RED') return ' abnormal.';
+    if (results.prediction === 'GREEN') return ' normal.';
+  }
+
   return (
     <div className="anomoly-detection-fe" style={calculateResultColor(true)}>
-      <div className="form">
-        <h1>{determineHeaderText()}</h1>
-        <input onChange={onValueChange} type="number" value={inputValue} />
-        <button
-          className="predict-button"
-          onClick={onSubmit}
-          style={calculateResultColor(true)}
-        >
-          Predict
+      <div className="content">
+        <div className="form">
+          <h1>{determineHeaderConfidence()} <span style={calculateResultColor(false, true)}>{determineHeaderPrediction()}</span></h1>
+          <input onChange={onValueChange} type="number" value={inputValue} />
+          <button
+            className="predict-button"
+            onClick={onSubmit}
+            style={calculateResultColor(true)}
+          >
+            Predict
+          </button>
+        </div>
+        <div className="thermometer-container">
+          <h2>Confidence Meter</h2>
+          <div className="thermometer__stem">
+            <div
+              className="thermometer__confidence-measurement"
+              style={calculateConfidenceStyle()}
+            >
+              { results.confidence && <div className="thermometer__confidence-label">{Math.round(results?.confidence * 100)}%</div> }
+            </div>
+          </div>
+          <div className="thermometer__bulb" style={calculateResultColor()} />
+        </div>
+        <button onClick={onReset} className="reset-button">
+          Reset
         </button>
       </div>
-      <div className="thermometer-container">
-        <h2>Confidence Meter</h2>
-        <div className="thermometer__stem">
-          <div
-            className="thermometer__confidence-measurement"
-            style={calculateConfidenceStyle()}
-          >
-            <div className="thermometer__confidence-label">{Math.round(results?.confidence * 100)}%</div>
-          </div>
-        </div>
-        <div className="thermometer__bulb" style={calculateResultColor()} />
-      </div>
-      <button onClick={onReset} className="reset-button">
-        Reset
-      </button>
     </div>
   );
 };
