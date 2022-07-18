@@ -66,12 +66,12 @@ const App = () => {
 
   const determineHeaderConfidence = () => {
     if (!results.prediction || !results.confidence) return 'Is it normal?';
-    let header = 'We are fairly confident that this volume is';
-    if (results.confidence > 0.8)
-      header = 'We are very confident that this volume is';
-    if (results.confidence < 0.2)
-      header = 'There is a slight chance that this volume is';
-    return header;
+    // let header = 'We are fairly confident that this volume is';
+    // if (results.confidence > 0.8)
+    //   header = 'We are very confident that this volume is';
+    // if (results.confidence < 0.2)
+    //   header = 'There is a slight chance that this volume is';
+    return 'This volume is predicted to be';
   };
 
   const determineHeaderPrediction = () => {
