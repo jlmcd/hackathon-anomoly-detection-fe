@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './app.css';
-import generateDummyData from './dummyDataGenerator';
 
 const COLORS = {
   WHITE: '#E6EBE0',
@@ -12,6 +11,7 @@ const COLORS = {
 
 const App = () => {
   const [inputValue, setInputValue] = useState(0);
+  const [date, setDate] = useState();
   const [results, setResults] = useState({
     prediction: null,
     confidence: null,
@@ -26,21 +26,18 @@ const App = () => {
   };
 
   const onSubmit = async () => {
-    const res = await fetch('http://localhost:1337/prediction', {
+    const dateObj = new Date(date);
+    const dayOfWeek = dateObj.getDay() + 1; // the server asks for 1 - 7, not 0 - 6
+    const dayOfMonth = dateObj.getDate();
+    const response = await fetch('http://localhost:1337/prediction', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
-      body: {something: 'value'}
+      body: JSON.stringify([dayOfWeek, dayOfMonth, inputValue]),
     });
-    // const res = await fetch('http://localhost:1337/prediction', {
-    //   method: 'POST',
-    //   // headers: {
-    //   //   'Content-Type': 'application/json',
-    //   // },
-    //   // body: JSON.stringify({sample: [2, 10, 89]}),
-    // });
-    setResults(res);
+    const json = await response.json();
+    setResults(json);
   };
 
   const onValueChange = (evt) => {
@@ -54,16 +51,16 @@ const App = () => {
     if (!results.prediction || !results.confidence) return null;
     return {
       height: `${results.confidence * 100}%`,
-      backgroundColor: COLORS[results.prediction],
+      backgroundColor: COLORS[results.prediction.toUpperCase()],
     };
   };
 
   const calculateResultColor = (includeTransparancy, includeTextColor) => {
     if (!results.prediction) return null;
-    let backgroundColor = COLORS[results.prediction];
+    let backgroundColor = COLORS[results.prediction.toUpperCase()];
     if (includeTransparancy) backgroundColor += '08';
     const color =
-      includeTextColor && results.prediction === 'GREEN' ? 'white' : '';
+      includeTextColor && results.prediction.toUpperCase() === 'GREEN' ? 'white' : '';
     return { backgroundColor, color };
   };
 
@@ -79,20 +76,29 @@ const App = () => {
 
   const determineHeaderPrediction = () => {
     if (!results.prediction || !results.confidence) return null;
-    if (results.prediction === 'RED') return ' abnormal.';
-    if (results.prediction === 'GREEN') return ' normal.';
+    if (results.prediction.toUpperCase() === 'RED') return ' abnormal.';
+    if (results.prediction.toUpperCase() === 'GREEN') return ' normal.';
   };
 
   return (
     <div className="anomoly-detection-fe" style={calculateResultColor(true)}>
+      <header>
+        <h1>Client: Scott Arms Dental Practice</h1>
+        <h2>Metric: Total requests sent by email</h2>
+      </header>
       <div className="content">
         <div className="form">
-          <h1>
+          <h2>
             {determineHeaderConfidence()}{' '}
             <span style={calculateResultColor(false, true)}>
               {determineHeaderPrediction()}
             </span>
-          </h1>
+          </h2>
+          <input
+            onChange={(e) => setDate(e.target.value)}
+            type="date"
+            value={date}
+          />
           <input onChange={onValueChange} type="number" value={inputValue} />
           <button
             className="predict-button"
@@ -102,7 +108,7 @@ const App = () => {
             Predict
           </button>
         </div>
-        <div className="thermometer-container">
+        {/* <div className="thermometer-container">
           <h2>Confidence Meter</h2>
           <div className="thermometer__stem">
             <div
@@ -117,7 +123,7 @@ const App = () => {
             </div>
           </div>
           <div className="thermometer__bulb" style={calculateResultColor()} />
-        </div>
+        </div> */}
         <button onClick={onReset} className="reset-button">
           Reset
         </button>

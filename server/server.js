@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 const PORT = 1337;
 
 require('@tensorflow/tfjs-node');
@@ -142,48 +143,25 @@ function calcClassEval(pitchIndex, classSize, values) {
 function statusFromClassNum(classNum) {
   switch (classNum) {
     case 0:
-      return 'Green';
+      return 'GREEN';
     case 1:
-      return 'Red';
+      return 'RED';
     default:
-      return 'Unknown';
+      return 'UNKNOWN';
   }
 }
 
-
-// async function run() {
-//   let numTrainingIterations = 30;
-//   const TIMEOUT_BETWEEN_EPOCHS_MS = 500;
-//   for (var i = 0; i < numTrainingIterations; i++) {
-//       console.log(`Training iteration : ${i + 1} / ${numTrainingIterations}`);
-//       await model.fitDataset(trainingData, { epochs: 1 });
-//       await evaluate(true);
-//       await sleep(TIMEOUT_BETWEEN_EPOCHS_MS);
-//   }
-
-
-//   await predictSample([1,18,20,]);  // RED
-//   await predictSample([2,19,130,]); // GREEN
-//   await predictSample([3,20,140,]); // GREEN
-//   await predictSample([4,21,160,]); // GREEN
-//   await predictSample([5,15,10,]);  // RED
-//   await predictSample([6,16,150,]); // GREEN
-//   await predictSample([7,17,10,]);  // RED
-
-// }
-
 const app = express();
+app.use(cors())
 app.use(express.json());
 
-app.post('/prediction', (req, res) => {
-  console.log('req.body', req.body);
-  // predictSample(req.body)
-  console.log('HTIEWHOIHTOEIWHT')
-  res.status(200).send('Hello World!')
+app.post('/prediction', async (req, res) => {
+  const prediction = await predictSample(req.body)
+  res.status(200).send({prediction, confidence: 1})
 })
 
 app.listen(PORT, async () => {
-  let numTrainingIterations = 1;
+  let numTrainingIterations = 30;
   const TIMEOUT_BETWEEN_EPOCHS_MS = 500;
   for (var i = 0; i < numTrainingIterations; i++) {
       console.log(`Training iteration : ${i + 1} / ${numTrainingIterations}`);
